@@ -1,5 +1,5 @@
 class StartUp{
     constructor(){
-        console.log(local change)
+        console.log("local change");
     }
 }
