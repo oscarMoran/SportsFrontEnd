@@ -1,8 +1,8 @@
 export interface Team{
-    id : number;
-    name : string;
+    idTeam : number;
+    nameTeam : string;
     playersNumber : number;
-    adwardsWon : number;
+    awardsWon : number;
     foundationDate: string;
     category: string;
     sport: string;
