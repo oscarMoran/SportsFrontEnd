@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Team } from 'src/app/models/team.model';
 import {Chart, registerables} from 'chart.js'
+import { LoginService } from 'src/app/services/login.service';
+import { TokenResponse } from 'src/app/models/tokenResponse.model';
+import { TeamsService } from 'src/app/services/teams.service';
 
 @Component({
   selector: 'app-team-list',
@@ -8,79 +11,55 @@ import {Chart, registerables} from 'chart.js'
   styleUrls: ['./team-list.component.css']
 })
 export class TeamListComponent implements OnInit {
-  
-  teams : Team[] =[
-    {
-      id: 1,
-      name : 'Zorros',
-      adwardsWon : 20,
-      playersNumber : 35,
-      sport : 'Soccer',
-      category : 'Male',
-      country : 'Mex',
-      foundationDate : '25-02-2023'
-    },
-    {
-      id: 2,
-      name : 'Tigres',
-      adwardsWon : 30,
-      playersNumber : 15,
-      sport : 'Soccer',
-      category : 'Male',
-      country : 'USA',
-      foundationDate : '25-04-2023'
-    },
-    {
-      id: 3,
-      name : 'Culones',
-      adwardsWon : 10,
-      playersNumber : 20,
-      sport : 'Soccer',
-      category : 'Male',
-      country : 'CAN',
-      foundationDate : '15-07-2023'
-    },
-    {
-      id: 4,
-      name : 'Pozoleros',
-      adwardsWon : 30,
-      playersNumber : 21,
-      sport : 'Soccer',
-      category : 'Male',
-      country : 'Mex',
-      foundationDate : '14-08-2023'
-    }
-  ];
+  constructor(private loginService: LoginService, private teamService : TeamsService){
+
+  }
+  teams : Team[] =[];
+  xLabels :string [] =[];
+  xData : number[] =[];
+  bgColors : string[] =[];
+  borderColors : string[] =[];
+
   ngOnInit(): void {
     Chart.register(...registerables);
+    
+    this.GetTeamsInformation();
+  }
+  async GetTeamsInformation(){
+    var getSession = sessionStorage.getItem("token");
+    if(getSession == null){
+      var newToken = await this.loginService.GetToken();
+      await this.FillTable(newToken);
+    }else{
+      await this.FillTable(getSession.toString());
+    }
     this.BuildGraphContainer();
   }
 
+  async FillTable(token:string){
+    var response = await this.teamService.GetTeams(token);
+    if(response !== undefined)
+      response.forEach(el => {
+          this.teams.push(el);
+      });
+  }
+  
   BuildGraphContainer(){
+    this.teams.forEach(el=>{
+      this.xLabels.push(el.nameTeam);
+      this.xData.push(el.awardsWon);
+      this.bgColors.push(`rgba(${Math.floor((Math.random() * 255) + 1)},${Math.floor((Math.random() * 255) + 1)},${Math.floor((Math.random() * 255) + 1)},${Math.floor((Math.random() * 3) + 1)})`);
+      this.borderColors.push(`rgba(${Math.floor((Math.random() * 255) + 1)},${Math.floor((Math.random() * 255) + 1)},${Math.floor((Math.random() * 255) + 1)},${Math.floor((Math.random() * 3) + 1)})`);
+    });
     var myChart = new Chart("myChart", {
       type: 'bar',
       data: {
-          labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+          labels: this.xLabels,
           datasets: [{
-              label: '# of Votes',
-              data: [12, 19, 3, 5, 2, 30],
-              backgroundColor: [
-                  'rgba(255, 99, 132, 0.2)',
-                  'rgba(54, 162, 235, 0.2)',
-                  'rgba(255, 206, 86, 0.2)',
-                  'rgba(75, 192, 192, 0.2)',
-                  'rgba(153, 102, 255, 0.2)',
-                  'rgba(255, 159, 64, 0.2)'
-              ],
-              borderColor: [
-                  'rgba(255, 99, 132, 1)',
-                  'rgba(54, 162, 235, 1)',
-                  'rgba(255, 206, 86, 1)',
-                  'rgba(75, 192, 192, 1)',
-                  'rgba(153, 102, 255, 1)',
-                  'rgba(255, 159, 64, 1)'
-              ],
-              borderWidth: 1
+              label: 'Team awards total',
+              data : this.xData,
+              backgroundColor : this.bgColors,
+              borderColor : this.borderColors
           }]
       },
       options: {

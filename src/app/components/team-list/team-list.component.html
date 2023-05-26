@@ -15,19 +15,20 @@
         </thead>
         <tbody>
             <tr *ngFor="let t of teams">
-                <td>{{t.id}}</td>
-                <td>{{t.name}}</td>
+                <td>{{t.idTeam}}</td>
+                <td>{{t.nameTeam}}</td>
                 <td>{{t.foundationDate}}</td>
                 <td>{{t.playersNumber}}</td>
                 <td>{{t.sport}}</td>
                 <td>{{t.category}}</td>
                 <td>{{t.country}}</td>
-                <td>{{t.adwardsWon}}</td>
+                <td>{{t.awardsWon}}</td>
             </tr>
         </tbody>
     </table>
     <p *ngIf="!teams || teams.length == 0">No teams found.</p>
-</div>
-<div id="divChart">
-    <canvas id="myChart"></canvas>
+
+    <div id="divChart">
+        <canvas id="myChart"></canvas>
+    </div>
 </div>
