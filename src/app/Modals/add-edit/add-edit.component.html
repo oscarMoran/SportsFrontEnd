@@ -1,0 +1,70 @@
+<div class="container">
+  <h2 mat-dialog-title  align="center">{{formTitle}}</h2>
+  <mat-dialog-content class="mat-typography">
+
+    <form [formGroup]="teamForm">
+      <mat-grid-list cols="2"  rowHeight="100px">
+        <mat-grid-tile>
+          <mat-form-field appearance="outline" class="text-white">
+            <mat-label>Name:</mat-label>
+            <input matInput formControlName="Name">
+          </mat-form-field>
+        </mat-grid-tile>
+        <mat-grid-tile>
+          <mat-form-field appearance="outline">
+            <mat-label>Player Number:</mat-label>
+            <input matInput type="number" formControlName="PlayerNumber">
+          </mat-form-field>
+        </mat-grid-tile>
+        <mat-grid-tile>
+          <mat-form-field appearance="outline">
+            <mat-label>Awards won:</mat-label>
+            <input matInput type="number" formControlName="AwardsWon">
+          </mat-form-field>
+        </mat-grid-tile>
+        <mat-grid-tile>
+          <mat-form-field>
+            <mat-label>Country</mat-label>
+            <mat-select formControlName="countryList" [(ngModel)]="selectedCountry">
+              <mat-option *ngFor="let c of countries" required [value]="c.id">{{c.name}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </mat-grid-tile>
+        <mat-grid-tile>
+          <mat-form-field>
+            <mat-label>Category</mat-label>
+            <mat-select formControlName="categoryList" [(ngModel)]="selectedCategory">
+              <mat-option *ngFor="let cat of categories" required [value]="cat.id">{{cat.name}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </mat-grid-tile>
+        <mat-grid-tile>
+          <mat-form-field>
+            <mat-label>Sport</mat-label>
+            <mat-select formControlName="sportList" [(ngModel)]="selectedSport">
+              <mat-option *ngFor="let s of sports" required [value]="s.id">{{s.name}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </mat-grid-tile>
+        <mat-grid-tile>
+          <mat-form-field class="example-full-width">
+            <mat-label>Choose a date</mat-label>
+            <input matInput [min]="minDate" [max]="maxDate" [matDatepicker]="picker" formControlName="FoundationDate">
+            <mat-hint>YYYY/MM/DD</mat-hint>
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+          </mat-form-field>
+        </mat-grid-tile>
+      </mat-grid-list>
+    </form>
+  </mat-dialog-content>
+  <mat-dialog-actions align="center">
+    <div class="row">
+      <div class="col-12">
+        <button mat-button mat-dialog-close>Close</button>
+        <button mat-button (click)="AddOrEdit()" cdkFocusInitial [disabled]="!teamForm.valid">{{btnAction}}</button>
+      </div>
+      <div class="col-12" *ngIf="!teamForm.valid"><p >Complete the form to enable '{{btnAction}}' button.</p></div>
+    </div>
+  </mat-dialog-actions>
+</div>
